@@ -13,7 +13,11 @@ import {
   import ConfirmEmailScreen from './src/screens/ConfirmEmailScreen/ConfirmEmailScreen';
   import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen/ForgotPasswordScreen';
   import NewPasswordScreen from './src/screens/NewPasswordScreen/NewPasswordScreen';
+  import HomeScreen from './src/screens/HomeScreen/HomeScreen';
   import Navigation from './src/navigation';
+  import HelpMeScreen from './src/screens/HelpMeScreen/HelpMeScreen';
+  import ResourcesScreen from './src/screens/ResourcesScreen/ResourcesScreen';
+  import SupportScreen from './src/SupportScreen/SupportScreen';
   
 
 

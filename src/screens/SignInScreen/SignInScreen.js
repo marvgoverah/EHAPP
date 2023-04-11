@@ -1,18 +1,23 @@
 import React from 'react'
-import {View, Text, useWindowDimensions, Image, StyleSheet,ScrollView } from 'react-native';
+import {View, Text, useWindowDimensions, Image, StyleSheet,ScrollView, TextInput } from 'react-native';
 import logo from '../../../assets/images/logo.png';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import { useState } from 'react';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons/SocialSignInButtons';
 import {useNavigation} from '@react-navigation/core';
+import {useForm, Controller} from 'react-hook-form';
 
 
 const SignInScreen = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const {height} = useWindowDimensions();
+     const {height} = useWindowDimensions();
     const navigation=useNavigation();
+
+    const {
+        control,
+        handleSubmit,
+        formState: {errors},
+      } = useForm();
 
     const onSignInPressed = () => {
         navigation.navigate('Home');
@@ -35,16 +40,29 @@ const SignInScreen = () => {
             resizeMode = 'contain' 
             /> 
             <CustomInput
-             placeholder = "Username"
-             value = {username}
-             setValue={setUsername}/>
-            <CustomInput 
-            placeholder = "Password"
-            value = {password} 
-            setValue={setPassword}
-            secureTextEntry />
+          name="username"
+          placeholder="Username"
+          control={control}
+          rules={{required: 'Username is required'}}
+        />
 
-            <CustomButton text = "Sign In" onPress={onSignInPressed} />
+        <CustomInput
+          name="password"
+          placeholder="Password"
+          secureTextEntry
+          control={control}
+          rules={{
+            required: 'Password is required',
+            minLength: {
+              value: 8,
+              message: 'Password must be between 8 and 24 characters',},
+            maxLength: {
+              value: 24,
+              message: 'Password must be between 8 and 24 characters',
+            },
+          }}
+        />                    
+            <CustomButton text = "Sign In" onPress={handleSubmit(onSignInPressed)} />
 
             <CustomButton
              text = "Forgot Password" 
