@@ -6,6 +6,7 @@ import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 
+
 const ConfirmEmailScreen = () => {
   const {control, handleSubmit} = useForm() ;
 

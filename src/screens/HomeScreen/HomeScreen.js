@@ -1,52 +1,22 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { View, Text, useWindowDimensions, Image, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
-import EarthQuake from '../../../assets/images/EarthQuake.jpg';
-import Evac from '../../../assets/images/Evac.jpg';
-import Fire from '../../../assets/images/Fire.jpg';
-import Hurricane from '../../../assets/images/Hurricane.jpg';
-import Tornado from '../../../assets/images/Tornado.jpg';
-import Tornado1 from '../../../assets/images/Tornado1.jpg';
-import Volcano from '../../../assets/images/Volcano.jpg';
-import Volcano1 from '../../../assets/images/Volcano1.jpg';
+import now from '../../../assets/images/now.png';
 import logo from '../../../assets/images/logo.png';
+import CustomButton from '../../components/CustomButton/CustomButton';
 
-const imageList = [Evac, EarthQuake, Fire, Hurricane, Tornado1, Volcano, Tornado];
-
-const ImageReel = () => {
-  const scrollX = useRef(new Animated.Value(0)).current;
-
-  const handleScroll = Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-    useNativeDriver: true,
-  });
-
-  const windowWidth = useWindowDimensions().width;
-  const imageWidth = windowWidth - 40;
-  const imageHeight = 150;
-
-  return (
-    <View style={styles.imageReelContainer}>
-      <Animated.ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={imageWidth}
-        decelerationRate="fast"
-        bounces={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ paddingLeft: 20 }}
-      >
-        {imageList.map((image, index) => (
-          <Image key={index} source={image} style={{ width: imageWidth, height: imageHeight, borderRadius: 10 }} />
-        ))}
-      </Animated.ScrollView>
-    </View>
-  );
-};
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+
+  const onResourcesPressed = () => {
+    navigation.navigate('Resources');
+  };
+
+  const onSupportPressed = () => {
+    navigation.navigate('Support');
+  };
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -54,26 +24,32 @@ const HomeScreen = () => {
         <Image source={logo} style={styles.logo} resizeMode="contain" />
 
         <Text style={styles.title}>
-          Relief Emergency App, Help is just a Click Away
+          Relief Emergency App, Help on your fingertips
         </Text>
 
         <Text style={styles.body}>
-          Get help when you need it most. Our emergency relief app connects you with local resources and aid in times of crisis. Whether it's natural disasters, accidents, or medical emergencies, our app provides quick access to the help you need to stay safe and secure.
+         Stay connected with your fellow citizens, share resources and information, and support each other through difficult times. Whether it's reporting an incident, checking for updates, or reaching out to a neighbor in need, every action you take makes a difference. So join us in building a stronger, more resilient community. Let's stand together and face any challenge that comes our way.
         </Text>
+        <View style={styles.container}>
+  <CustomButton
+    text="Resources"
+    onPress={onResourcesPressed}
+    type="SECONDARY"    
+  />
+  <CustomButton
+    text="Support"
+    onPress={onSupportPressed}
+    type="SECONDARY"
+  
+  />
+</View>
 
-        <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('Help')}>
-          <Text style={styles.linkText}>Help Me</Text>
-        </TouchableOpacity>
+  <Text style={styles.body}>
+    In case of Emergency please press on "Help Me" button to call for assistance.
+    Please remember its an offence to call for help when its npt an emergency.
+  </Text>  
+  <Image source={now} style={styles.now} resizeMode="contain" />
 
-        <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('Resources')}>
-          <Text style={styles.linkText}>Resources</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('Support')}>
-          <Text style={styles.linkText}>Support</Text>
-        </TouchableOpacity>
-
-        <ImageReel />
       </View>
     </ScrollView>
   );
@@ -90,46 +66,36 @@ const styles = StyleSheet.create({
     maxHeight: 200,
   },
   title: {
+    fontSize: 18,
     fontWeight: 'bold',
-    fontSize: 24,
-    textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 10,
+    color: '#051C60',
+    marginRight: 2,
   },
   body: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginHorizontal: 30,
-    marginBottom: 20,
+    fontSize: 13,
+    marginVertical: 10,
+    fontStyle: 'italic',
+    textAlign: 'left',
   },
-  link: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  linkText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontSize: 18,
-  },
-  imageReelContainer: {
-    height: 150,
+
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 60,
     marginTop: 20,
-  },
-  image: {
-    height: '100%',
-    width: 200,
-    marginRight: 20,
-    borderRadius: 10,
-  },
-  imageReelContainer: {
-    height: 150,
-    marginTop: 20,
-  },
+       
+    },
+   bottomContainer: {
+      marginHorizontal: 3,
+      marginVertical: 10,
+    },
+    now: {
+      width: '50%',
+      maxWidth: 300,
+      maxHeight: 200,
+    },
   
-});
+ });
 
 export default HomeScreen;
 

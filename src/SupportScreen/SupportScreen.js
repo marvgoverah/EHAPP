@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 import { TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import CustomButton from '../components/CustomButton/CustomButton';
 
 const SupportScreen = () => {
 
@@ -18,7 +19,7 @@ const SupportScreen = () => {
   };
 
   const onOptionPress = option => {
-    setSelectedOption(option);
+    navigation.navigate('Home');
   };
  
     return (
@@ -29,19 +30,17 @@ const SupportScreen = () => {
         <Text style={styles.subTitle}>How can you help?</Text>
 
         <View style={styles.optionsContainer}>
-        <TouchableOpacity style={[styles.option, selectedOption === 'money' && styles.selectedOption]} onPress={() => onOptionPress('money')}>
+        <CustomButton style={[styles.option, selectedOption === 'money' && styles.selectedOption]} onPress={() => onOptionPress('money')}>
             <Text style={styles.optionText}>Donate money</Text>
-          </TouchableOpacity>
+          </CustomButton>
 
-          <CustomButton text="Donate" onPress={onSubmitPressed} type="PRIMARY" />
-
-          <TouchableOpacity style={[styles.option, selectedOption === 'supplies' && styles.selectedOption]} onPress={() => onOptionPress('supplies')}>
+          <CustomButton style={[styles.option, selectedOption === 'supplies' && styles.selectedOption]} onPress={() => onOptionPress('supplies')}>
             <Text style={styles.optionText}>Donate supplies</Text>
-          </TouchableOpacity>
+          </CustomButton>
 
-          <TouchableOpacity style={[styles.option, selectedOption === 'volunteer' && styles.selectedOption]} onPress={() => onOptionPress('volunteer')}>
+          <CustomButton style={[ selectedOption === 'volunteer' && styles.selectedOption]} onPress={() => onOptionPress('volunteer')}>
             <Text style={styles.optionText}>Volunteer your time</Text>
-          </TouchableOpacity>
+          </CustomButton>
         </View>
 
         <Text style={styles.subTitle}>Share your message of support</Text>
@@ -61,7 +60,7 @@ const SupportScreen = () => {
 
         <Text style={styles.subTitle}>Inspiration board</Text>
 
-        <ScrollView horizontal={true} style={styles.inspirationBoard}>
+        <ScrollView horizontal={false} style={styles.inspirationBoard}>
           <TouchableOpacity style={styles.inspirationCard}>
             <Text style={styles.inspirationText}>"The best way to find yourself is to lose yourself in the service of others." - Mahatma Gandhi</Text>
           </TouchableOpacity>
