@@ -1,44 +1,58 @@
-import { useState } from 'react';
-import React from "react";
-import {View, Text, StyleSheet,ScrollView } from 'react-native';
-import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomButton from '../../components/CustomButton/CustomButton';
-import SocialSignInButtons from '../../components/SocialSignInButtons/SocialSignInButtons';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
+import CustomInput from '../../components/CustomInput';
+import CustomButton from '../../components/CustomButton';
+import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
+import {Auth} from 'aws-amplify';
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen = () => {
-    const{control,handleSubmit,watch} =useForm();
-    const pwd =watch('password');
-    const navigation =useNavigation();
+  const {control, handleSubmit, watch} = useForm();
+  const pwd = watch('password');
+  const navigation = useNavigation();
 
-    const onRegisterPressed = () => {
-        navigation.navigate('ConfirmEmail');
-    };
-    const onTermsOfUsePressed = () => {
-        console.warn('onTermsOfUsePressed');
-      };
-      const onPrivacyPressed = () => {
-        console.warn('onPrivacyPressed');
-      };
-      const onSignInPressed = () => {
-        navigation.navigate('SignIn');
-      };
+  const onRegisterPressed = async data => {
+    const {username, password, email, name} = data;
+    try {
+      await Auth.signUp({
+        username,
+        password,
+        attributes: {email, name, preferred_username: username},
+      });
 
-    return (
-        <ScrollView showsVerticalScrollIndicator ={false} >
-        <View style = {styles.root}>
-           <Text style= {styles.title}> Create an Account </Text>
+      navigation.navigate('ConfirmEmail', {username});
+    } catch (e) {
+      Alert.alert('Oops', e.message);
+    }
+  };
 
-           <CustomInput
-          name="Name"
+  const onSignInPress = () => {
+    navigation.navigate('SignIn');
+  };
+
+  const onTermsOfUsePressed = () => {
+    console.warn('onTermsOfUsePressed');
+  };
+
+  const onPrivacyPressed = () => {
+    console.warn('onPrivacyPressed');
+  };
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.root}>
+        <Text style={styles.title}>Create an account</Text>
+
+        <CustomInput
+          name="name"
           control={control}
-          placeholder="name"
+          placeholder="Fullname"
           rules={{
-            required: 'Name is required',
+            required: 'Fullname is required',
             minLength: {
               value: 3,
               message: 'Name should be at least 3 characters long',
@@ -98,54 +112,52 @@ const SignUpScreen = () => {
           }}
         />
 
-            <CustomButton
-            text = "Register"
-            onPress={handleSubmit(onRegisterPressed)}
-            />
+        <CustomButton
+          text="Register"
+          onPress={handleSubmit(onRegisterPressed)}
+        />
 
-            <Text style={styles.text}>
-            By registering, you confirm that you accept our{' '}
-            <Text style={styles.link} onPress={onTermsOfUsePressed}>
-                Terms of Use
-            </Text>{' '}
-            and{' '}
-            <Text style={styles.link} onPress={onPrivacyPressed}>
-                Privacy Policy
-            </Text>
-            </Text>
+        <Text style={styles.text}>
+          By registering, you confirm that you accept our{' '}
+          <Text style={styles.link} onPress={onTermsOfUsePressed}>
+            Terms of Use
+          </Text>{' '}
+          and{' '}
+          <Text style={styles.link} onPress={onPrivacyPressed}>
+            Privacy Policy
+          </Text>
+        </Text>
 
         <SocialSignInButtons />
 
         <CustomButton
-        text="Have an account? Sign in here"
-        onPress={onSignInPressed}  
-        type = "TERTIARY"
-        /> 
-
-        </View>
-        </ScrollView>
-    );
+          text="Have an account? Sign in"
+          onPress={onSignInPress}
+          type="TERTIARY"
+        />
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-    root: {
-        alignItems: 'center',
-        padding: 20,
-          },
-    text: {
-        color: 'gray',
-        marginVertical: 10,
-          },
-    link: {
-         color: '#FDB075',
-          },
-
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#051C60',
-        margin: 10, 
-    }
+  root: {
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#051C60',
+    margin: 10,
+  },
+  text: {
+    color: 'gray',
+    marginVertical: 10,
+  },
+  link: {
+    color: '#FDB075',
+  },
 });
 
-export default SignUpScreen
+export default SignUpScreen;

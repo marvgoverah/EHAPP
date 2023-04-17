@@ -5,10 +5,17 @@ import {useForm} from 'react-hook-form';
 import now from '../../../assets/images/now.png';
 import logo from '../../../assets/images/logo.png';
 import CustomButton from '../../components/CustomButton/CustomButton';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Auth} from 'aws-amplify';
 
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+
+  const signOut = () => {
+    Auth.signOut();
+  };
 
   const onResourcesPressed = () => {
     navigation.navigate('Resources');
@@ -24,11 +31,11 @@ const HomeScreen = () => {
         <Image source={logo} style={styles.logo} resizeMode="contain" />
 
         <Text style={styles.title}>
-          Relief Emergency App, Help on your fingertips
+       Emergency App, Help on your fingertips
         </Text>
 
         <Text style={styles.body}>
-         Stay connected with your fellow citizens, share resources and information, and support each other through difficult times. Whether it's reporting an incident, checking for updates, or reaching out to a neighbor in need, every action you take makes a difference. So join us in building a stronger, more resilient community. Let's stand together and face any challenge that comes our way.
+        Whether it's reporting an incident, checking for updates, or reaching out to a neighbor in need, every action you take makes a difference. So join us in building a stronger, more resilient community. Let's stand together and face any challenge that comes our way.
         </Text>
         <View style={styles.container}>
   <CustomButton
@@ -49,6 +56,21 @@ const HomeScreen = () => {
     Please remember its an offence to call for help when its npt an emergency.
   </Text>  
   <Image source={now} style={styles.now} resizeMode="contain" />
+
+    <View>
+    <Text
+        onPress={signOut}
+        style={{
+          width: '100%',
+          textAlign: 'center',
+          color: 'red',
+          marginTop: 8,
+          marginVertical: 20,
+          fontSize: 20,
+        }}>
+        Sign out
+      </Text>
+    </View>
 
       </View>
     </ScrollView>

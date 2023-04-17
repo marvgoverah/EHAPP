@@ -1,45 +1,68 @@
-import React from 'react'
-import {View, Text, useWindowDimensions, Image, StyleSheet,ScrollView, TextInput } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+  ScrollView,
+  TextInput,
+  Alert,
+} from 'react-native';
 import logo from '../../../assets/images/logo.png';
-import CustomInput from '../../components/CustomInput/CustomInput';
-import { useState } from 'react';
-import CustomButton from '../../components/CustomButton/CustomButton';
-import SocialSignInButtons from '../../components/SocialSignInButtons/SocialSignInButtons';
-import {useNavigation} from '@react-navigation/core';
+import CustomInput from '../../components/CustomInput';
+import CustomButton from '../../components/CustomButton';
+import SocialSignInButtons from '../../components/SocialSignInButtons';
+import {useNavigation} from '@react-navigation/native';
 import {useForm, Controller} from 'react-hook-form';
-
+import {Auth} from 'aws-amplify';
+import HomeScreen from '../HomeScreen/HomeScreen';
 
 const SignInScreen = () => {
-     const {height} = useWindowDimensions();
-    const navigation=useNavigation();
+  const {height} = useWindowDimensions();
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
-    const {
-        control,
-        handleSubmit,
-        formState: {errors},
-      } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm();
 
-    const onSignInPressed = () => {
-        navigation.navigate('Home');
-    };
-    const onForgotPasswordPressed = () => {
-        navigation.navigate('ForgotPassword');
-           };
+  const onSignInPressed = async data => {
+    if (loading) {
+      return;
+    }
 
-    
-    const onSignUpPressed = () => {
-        navigation.navigate('SignUp');
-            };
+    setLoading(true);
+    try {
+      const response = await Auth.signIn(data.username, data.password);
+      //console.log(response);
+      //navigation.navigate('Home');
+    } catch (e) {
+      Alert.alert('Oops', e.message);
+    }
+    setLoading(false);
+  };
 
-    return (
-        <ScrollView showsVerticalScrollIndicator ={false} >
-        <View style = {styles.root}>
-            <Image
-            source ={logo}
-            style ={[styles.logo, {height: height*0.3}]}
-            resizeMode = 'contain' 
-            /> 
-            <CustomInput
+  const onForgotPasswordPressed = () => {
+    navigation.navigate('ForgotPassword');
+  };
+
+  const onSignUpPress = () => {
+    navigation.navigate('SignUp');
+  };
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.root}>
+        <Image
+          source={logo}
+          style={[styles.logo, {height: height * 0.3}]}
+          resizeMode="contain"
+        />
+
+        <CustomInput
           name="username"
           placeholder="Username"
           control={control}
@@ -55,43 +78,47 @@ const SignInScreen = () => {
             required: 'Password is required',
             minLength: {
               value: 8,
-              message: 'Password must be between 8 and 24 characters',},
+              message: 'Password at least 8 to 24 characters long and contain (upper and lower case, digits and special characters',
+            },
             maxLength: {
               value: 24,
-              message: 'Password must be between 8 and 24 characters',
+              message: 'Password at least 8 to 24 characters long and contain (upper and lower case, digits and special characters',
             },
-          }}
-        />                    
-            <CustomButton text = "Sign In" onPress={handleSubmit(onSignInPressed)} />
+          }}        />
 
-            <CustomButton
-             text = "Forgot Password" 
-             onPress={onForgotPasswordPressed}
-             type = 'TERTIARY'/> 
+        <CustomButton
+          text={loading ? 'Loading...' : 'Sign In'}
+          onPress={handleSubmit(onSignInPressed)}
+        />
 
-            <SocialSignInButtons />
-                    
-            <CustomButton
-            text= "Dont have an account? Create one"
-            onPress={onSignUpPressed}
-            type='TERTIARY' 
-            />
+        <CustomButton
+          text="Forgot password?"
+          onPress={onForgotPasswordPressed}
+          type="TERTIARY"
+        />
 
-        </View>
-        </ScrollView>
-    );
+        <SocialSignInButtons />
+
+        <CustomButton
+          text="Don't have an account? Create one"
+          onPress={onSignUpPress}
+          type="TERTIARY"
+        />
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-    root: {
-        alignItems: 'center',
-        padding: 20,
-          },
-    logo: {
-        width: '70%',
-        maxWidth: 300,
-        maxHeight: 200,
-         },
+  root: {
+    alignItems: 'center',
+    padding: 20,
+  },
+  logo: {
+    width: '70%',
+    maxWidth: 300,
+    maxHeight: 200,
+  },
 });
 
-export default SignInScreen
+export default SignInScreen;

@@ -6,6 +6,8 @@ import Geolocation from 'react-native-geolocation-service';
 import MapView, { Marker } from 'react-native-maps';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import { PermissionsAndroid } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 Geolocation.setRNConfiguration({
   authorizationLevel: 'auto',

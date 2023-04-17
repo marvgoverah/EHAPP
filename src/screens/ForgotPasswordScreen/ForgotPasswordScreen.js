@@ -1,26 +1,27 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
+import {Auth} from 'aws-amplify';
 
 const ForgotPasswordScreen = () => {
   const {control, handleSubmit} = useForm();
+  const navigation = useNavigation();
 
-  const navigation= useNavigation();
-
-  const onSendPressed = () => {
-    navigation.navigate('NewPassword');
+  const onSendPressed = async data => {
+    try {
+      await Auth.forgotPassword(data.username);
+      navigation.navigate('NewPassword');
+    } catch (e) {
+      Alert.alert('Oops', e.message);
+    }
   };
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');
-  };
-
-  const onConfirmPress = () => {
-    console.warn('onSigninPressed');
   };
 
   return (
@@ -42,7 +43,7 @@ const ForgotPasswordScreen = () => {
         <CustomButton
           text="Back to Sign in"
           onPress={onSignInPress}
-          type="TERTIARY"   
+          type="TERTIARY"
         />
       </View>
     </ScrollView>

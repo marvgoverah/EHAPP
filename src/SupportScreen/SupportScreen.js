@@ -18,7 +18,7 @@ const SupportScreen = () => {
     console.log('Option selected:', selectedOption);
   };
 
-  const onOptionPress = option => {
+    const onBackPressed = () => {
     navigation.navigate('Home');
   };
  
@@ -74,7 +74,7 @@ const SupportScreen = () => {
           </TouchableOpacity>
         </ScrollView>
 
-        <TouchableOpacity style={styles.backButton} onPress={onSubmitPressed}>
+        <TouchableOpacity style={styles.backButton} onPress={onBackPressed}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
 
@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 20,
+    color: '#051C60',
+    margin: 10,
   },
   subTitle: {
     fontSize: 18,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   postButton: {
-    backgroundColor: '#FDB075',
+    backgroundColor: '#3B71F3',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',

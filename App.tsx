@@ -18,11 +18,21 @@ import {
   import HelpMeScreen from './src/screens/HelpMeScreen/HelpMeScreen';
   import ResourcesScreen from './src/screens/ResourcesScreen/ResourcesScreen';
   import SupportScreen from './src/SupportScreen/SupportScreen';
+import { withAuthenticator } from 'aws-amplify-react-native';
+  import  {Amplify}  from 'aws-amplify';
+ 
+  import config from './src/aws-exports';
+  
+    Amplify.configure({
+    ...config,
+    Analytics: {
+      disabled: true,
+    },
+  });
   
 
-
-
 const App = () => {
+ //Auth.signOut();
   return (
     <SafeAreaView style ={styles.root} >
      <Navigation/>
