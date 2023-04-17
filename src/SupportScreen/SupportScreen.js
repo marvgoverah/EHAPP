@@ -4,164 +4,150 @@ import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 import { TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import CustomButton from '../components/CustomButton/CustomButton';
+import CustomInput from '../components/CustomInput/CustomInput';
+import { Linking } from 'react-native';
+
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SupportScreen = () => {
 
   const navigation = useNavigation();
 
-  const {register, handleSubmit, formState: {errors}} = useForm();
-  const [selectedOption, setSelectedOption] = useState('');
   
+  const {control, handleSubmit, watch} = useForm();
   const onSubmit = data => console.log(data);
 
-  const onSubmitPressed = () => {
-    console.log('Option selected:', selectedOption);
+  const onDonatePressed = () => {
+    Linking.openURL('https://www.paypal.com/donate');
   };
 
     const onBackPressed = () => {
     navigation.navigate('Home');
   };
  
-    return (
+  return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <View style={styles.pageContainer}>
+      
         <Text style={styles.title}>Offer Support</Text>
 
         <Text style={styles.subTitle}>How can you help?</Text>
 
-        <View style={styles.optionsContainer}>
-        <CustomButton style={[styles.option, selectedOption === 'money' && styles.selectedOption]} onPress={() => onOptionPress('money')}>
-            <Text style={styles.optionText}>Donate money</Text>
-          </CustomButton>
-
-          <CustomButton style={[styles.option, selectedOption === 'supplies' && styles.selectedOption]} onPress={() => onOptionPress('supplies')}>
-            <Text style={styles.optionText}>Donate supplies</Text>
-          </CustomButton>
-
-          <CustomButton style={[ selectedOption === 'volunteer' && styles.selectedOption]} onPress={() => onOptionPress('volunteer')}>
-            <Text style={styles.optionText}>Volunteer your time</Text>
-          </CustomButton>
+        <View style={styles.container}>
+        <View style={styles.textContainer}>
+          <Text style={styles.inspirationText}>
+            To donate money towards any of our causes click here.
+          </Text>
         </View>
+        <View>
+        <CustomButton
+          text="Donate Cash"
+          onPress={onDonatePressed}
+        />
+        </View>
+      </View>
 
-        <Text style={styles.subTitle}>Share your message of support</Text>
+        <Text style={styles.inspirationText}>If you would like to volunteer your services to assist in any way you can, please fill in your details and our agents will get in touch with you.</Text>
 
-        <View style={styles.messageContainer}>
-          <TextInput 
-            style={styles.messageInput} 
-            placeholder="Type your message here" 
-            multiline={true}
-            {...register('message', {required: true})}
+        <View style={{flexDirection: 'column'}}>
+          <CustomInput
+            placeholder="Fullname"
+            name="Fullname"
+            control={control}
+            rules={{required: 'Fullname is required'}}
+            style={styles.customInput}
+          />
+          <CustomInput
+            name="email"
+            control={control}
+            placeholder="Email"
+            rules={{
+              required: 'Email is required',
+              pattern: {value: EMAIL_REGEX, message: 'Email is invalid'},
+            }}
+            style={styles.customInput}
           />
 
-          <TouchableOpacity style={styles.postButton} onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.postButtonText}>Post</Text>
-          </TouchableOpacity>
+          <CustomInput
+            placeholder="Address"
+            name="address"
+            control={control}
+            rules={{required: 'Address is required'}}
+            style={[styles.customInput, {height: 80}]}
+          />
+          <CustomInput
+            placeholder="Comment"
+            name="comment"
+            control={control}
+            rules={{required: 'Comment is required'}}
+            style={[styles.customInput, {height: 150}]}
+          />
         </View>
-
-        <Text style={styles.subTitle}>Inspiration board</Text>
-
-        <ScrollView horizontal={false} style={styles.inspirationBoard}>
-          <TouchableOpacity style={styles.inspirationCard}>
-            <Text style={styles.inspirationText}>"The best way to find yourself is to lose yourself in the service of others." - Mahatma Gandhi</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.inspirationCard}>
-            <Text style={styles.inspirationText}>"We make a living by what we get, but we make a life by what we give." - Winston Churchill</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.inspirationCard}>
-            <Text style={styles.inspirationText}>"The most important thing in life is to stop saying 'I wish' and start saying 'I will.' Consider nothing impossible, then treat possibilities as probabilities." - Charles Dickens</Text>
-          </TouchableOpacity>
-        </ScrollView>
-
-        <TouchableOpacity style={styles.backButton} onPress={onBackPressed}>
+          
+           <CustomButton
+            text="Submit"
+            onPress={handleSubmit(onSubmit)}
+            style={styles.submitButton}
+          />
+          <TouchableOpacity style={styles.backButton} onPress={onBackPressed}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
-
-      </KeyboardAvoidingView>
+           
+        </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: 40,
+  },
+  textContainer: {
+    flex: 2,
+    paddingRight: 10,
+  },
+  buttonContainer: {
+    flex: 1,
+  },
+  text: {
+    fontSize: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#051C60',
     margin: 10,
+    textAlign: 'center', // center the title
+    
   },
   subTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginVertical: 20,
     textAlign: 'center',
-  },
-  optionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 30,
-  },
-  option: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    width: '30%',
-    alignItems: 'center',
-  },
-  optionText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  messageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 30,
-    width: '100%',
-  },
-  messageInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 10,
-    height: 100,
-    width: '70%',
-    textAlignVertical: 'top',
-  },
-  postButton: {
-    backgroundColor: '#3B71F3',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    width: '25%',
-  },
-  postButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  inspirationBoard: {
-    flexDirection: 'row',
-    marginBottom: 30,
-  },
-  inspirationCard: {
-    backgroundColor: '#F0F0F0',
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
-    width: 300,
   },
   inspirationText: {
     fontStyle: 'italic',
     textAlign: 'center',
   },
+  pageContainer: {
+    marginHorizontal: 15,
+  },
+  backButton: {
+    padding: 10,
+    marginTop: 20,
+    alignSelf: 'center'
+  },
+  submitButton: {
+    alignSelf: 'center',
+    marginHorizontal: 70,
+    marginTop: 20,
+  },
 });
+
 
 export default SupportScreen;
