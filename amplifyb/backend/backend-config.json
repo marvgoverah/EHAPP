@@ -1,6 +1,6 @@
 {
   "auth": {
-    "EMAPP": {
+    "EHAPP": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

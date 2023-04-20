@@ -1,19 +1,19 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-ehapp-staging-152016-authRole",
-      "UnauthRoleArn": "arn:aws:iam::244936064944:role/amplify-ehapp-staging-152016-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::244936064944:role/amplify-ehapp-staging-152016-authRole",
+      "AuthRoleName": "amplify-emapp-staging-144546-authRole",
+      "UnauthRoleArn": "arn:aws:iam::244936064944:role/amplify-emapp-staging-144546-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::244936064944:role/amplify-emapp-staging-144546-authRole",
       "Region": "us-west-2",
-      "DeploymentBucketName": "amplify-ehapp-staging-152016-deployment",
-      "UnauthRoleName": "amplify-ehapp-staging-152016-unauthRole",
-      "StackName": "amplify-ehapp-staging-152016",
-      "StackId": "arn:aws:cloudformation:us-west-2:244936064944:stack/amplify-ehapp-staging-152016/8781b970-d945-11ed-a056-0640a29552e1",
-      "AmplifyAppId": "d3nwel6eh44qlm"
+      "DeploymentBucketName": "amplify-emapp-staging-144546-deployment",
+      "UnauthRoleName": "amplify-emapp-staging-144546-unauthRole",
+      "StackName": "amplify-emapp-staging-144546",
+      "StackId": "arn:aws:cloudformation:us-west-2:244936064944:stack/amplify-emapp-staging-144546/b421d490-ddf7-11ed-8842-06909499fb85",
+      "AmplifyAppId": "d2xxushaqzeexn"
     },
     "categories": {
       "auth": {
-        "EHAPP": {}
+        "EMAPP": {}
       }
     }
   }

@@ -1,0 +1,62 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-ehapp-staging-152016-authRole",
+      "UnauthRoleArn": "arn:aws:iam::244936064944:role/amplify-ehapp-staging-152016-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::244936064944:role/amplify-ehapp-staging-152016-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-ehapp-staging-152016-deployment",
+      "UnauthRoleName": "amplify-ehapp-staging-152016-unauthRole",
+      "StackName": "amplify-ehapp-staging-152016",
+      "StackId": "arn:aws:cloudformation:us-west-2:244936064944:stack/amplify-ehapp-staging-152016/8781b970-d945-11ed-a056-0640a29552e1",
+      "AmplifyAppId": "d3nwel6eh44qlm"
+    }
+  },
+  "auth": {
+    "EHAPP": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS",
+            "REQUIRES_UPPERCASE"
+          ]
+        },
+        "signupAttributes": [
+          "EMAIL",
+          "NAME"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "output": {
+        "UserPoolId": "us-west-2_JBt7ALlXW",
+        "AppClientIDWeb": "5kmpqetcbllt4b5e2qrsgvgqrm",
+        "AppClientID": "4i9m3es86lr9d1lcqlc9q83t90",
+        "IdentityPoolId": "us-west-2:f441ab60-d72f-4d2c-b675-ba0182f1630d",
+        "UserPoolArn": "arn:aws:cognito-idp:us-west-2:244936064944:userpool/us-west-2_JBt7ALlXW",
+        "IdentityPoolName": "testAuthIdentityPool__staging",
+        "UserPoolName": "EHAPP"
+      },
+      "lastPushTimeStamp": "2023-04-13T11:26:17.884Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-ehapp-staging-152016-deployment/amplify-cfn-templates/auth/EHAPP-cloudformation-template.json",
+        "logicalId": "authEHAPP"
+      },
+      "lastPushDirHash": "EX8sjUMdN3xPYDW+nRynrAQiqB0="
+    }
+  }
+}

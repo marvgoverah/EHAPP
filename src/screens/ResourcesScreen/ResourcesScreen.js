@@ -8,42 +8,53 @@ import CustomButton from '../../components/CustomButton/CustomButton';
 import { PermissionsAndroid } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+//import Geolocation from '@react-native-community/geolocation';
 
-Geolocation.setRNConfiguration({
-  authorizationLevel: 'auto',
-  skipPermissionRequests: true,
-});
 
 const ResourcesScreen = () => {
   const navigation = useNavigation();
 
-  const { handleSubmit, control, errors } = useForm();
-
   const [region, setRegion] = useState(null);
+  const [error, setError] = useState(null);
+
+  const getCurrentPosition = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          position => {
+            const { latitude, longitude } = position.coords;
+            setRegion({
+              latitude,
+              longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+          },
+          error => {
+            console.log(error);
+            setError('Failed to get current location.');
+          },
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+        );
+      } else {
+        setError('Location permission denied.');
+      }
+    } catch (err) {
+      console.log(err);
+      setError('Failed to request location permission.');
+    }
+  };
+
+  useEffect(() => {
+    getCurrentPosition();
+  }, []);
 
   const onSubmitPressed = () => {
     navigation.navigate('Home');
   };
-
-  const handlePress = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-        setRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
-      },
-      error => console.log(error),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-    );
-  };
-
-  useEffect(() => {
-    handlePress();
-  }, []);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -54,10 +65,13 @@ const ResourcesScreen = () => {
           <MapView style={styles.map} region={region}>
             <Marker coordinate={region} />
           </MapView>
+        ) : error ? (
+          <Text style={styles.error}>{error}</Text>
         ) : (
           <Text>Loading...</Text>
         )}
-        <TouchableOpacity style={styles.button} onPress={handlePress}>
+
+        <TouchableOpacity style={styles.button} onPress={getCurrentPosition}>
           <Text style={styles.buttonText}>Show My Location</Text>
         </TouchableOpacity>
 
@@ -68,41 +82,36 @@ const ResourcesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  root: {
+  container: {
+    flex: 1,
     alignItems: 'center',
     padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#051C60',
-    margin: 10,
-  },
-  text: {
-    color: 'gray',
-    marginVertical: 10,
-  },
-  link: {
-    color: '#FDB075',
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 20,
   },
   map: {
+    height: 300,
     width: '100%',
-    height: '80%',
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: '#008080',
+    backgroundColor: '#007AFF',
     padding: 10,
     borderRadius: 5,
-    marginTop: 10,
+    marginBottom: 20,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  error: {
+    color: '#FF0000',
+    fontSize: 18,
+    marginBottom: 20,
   },
 });
 

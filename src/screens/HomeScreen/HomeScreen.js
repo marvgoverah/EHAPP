@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { View, Text, useWindowDimensions, Image, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Linking, Platform, PermissionsAndroid } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 import now from '../../../assets/images/now.png';
@@ -8,6 +8,7 @@ import CustomButton from '../../components/CustomButton/CustomButton';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Auth} from 'aws-amplify';
+import Geolocation from 'react-native-geolocation-service'; // import geolocation library
 
 
 const HomeScreen = () => {
@@ -24,7 +25,74 @@ const HomeScreen = () => {
   const onSupportPressed = () => {
     navigation.navigate('Support');
   };
+  const [currentCoords, setCurrentCoords] = useState(null); // initialize state for current coordinates
 
+  useEffect(() => {
+    // ask for location permission when the component mounts
+    if (Platform.OS === 'android') {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      ).then((result) => {
+        if (result === 'granted') {
+          // if permission is granted, get current coordinates
+          Geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              setCurrentCoords({ latitude, longitude });
+            },
+            (error) => console.log(error),
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+          );
+        }
+      });
+
+      // ask for permission to make a phone call
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+      ).then((result) => {
+        if (result !== 'granted') {
+          console.log('You need to grant permission to make phone calls');
+        }
+      });
+    } else {
+      // if not on Android, get current coordinates
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentCoords({ latitude, longitude });
+        },
+        (error) => console.log(error),
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+      );
+    }
+  }, []);
+
+  const handleHelpMeNowPress = () => {
+    if (!currentCoords) {
+      console.log('Current coordinates not available');
+      return;
+    }
+  
+    // on clicking the "help me now" image, call emergency number and send text message with current coordinates
+    const emergencyNumber = 'tel:790276688';
+    const textNumber = 'sms:+48790276688';
+    const textMessage = `Help! I need emergency assistance. My current coordinates are: ${currentCoords.latitude}, ${currentCoords.longitude}`;
+  
+    // check if phone call permission has been granted before making a call
+    if (Platform.OS === 'android') {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CALL_PHONE).then((result) => {
+        if (result) {
+          Linking.openURL(emergencyNumber); // open phone app to call emergency number
+        } else {
+          console.log('You need to grant permission to make phone calls');
+        }
+      });
+    } else {
+      Linking.openURL(emergencyNumber); // open phone app to call emergency number
+    }
+  
+    Linking.openURL(textNumber + `?body=${textMessage}`); // open messaging app with pre-filled text message
+  };
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.root}>
@@ -55,8 +123,11 @@ const HomeScreen = () => {
     In case of Emergency please press on "Help Me" button to call for assistance.
     Please remember its an offence to call for help when its npt an emergency.
   </Text>  
+
   <Image source={now} style={styles.now} resizeMode="contain" />
 
+
+  <Text style={styles.helpText} onPress={handleHelpMeNowPress}>Help me now</Text>
     <View>
     <Text
         onPress={signOut}
@@ -115,6 +186,12 @@ const styles = StyleSheet.create({
       width: '50%',
       maxWidth: 300,
       maxHeight: 200,
+    },
+    helpText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#007AFF',
+      marginBottom: 10,
     },
   
  });
